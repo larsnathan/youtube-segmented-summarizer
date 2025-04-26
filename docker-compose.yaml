@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  gui:
+    build: .
+    command: uv run gui.py
+    ports:
+      - "10101:10101"
+    volumes:
+      - ./filestore:/filestore
+      - dbdata:/db
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  chunker:
+    build: .
+    command: uv run chunk_worker.py
+    depends_on:
+      - gui
+      - db
+    volumes:
+      - ./filestore:/filestore
+      - dbdata:/db
+    restart: unless-stopped
+
+  db:
+    image: keinos/sqlite3:latest
+    volumes:
+      - dbdata:/db
+    command: tail -f /dev/null
+
+  ollama:
+    image: ollama/ollama:latest
+    # -- run a shell instead of the default 'ollama' entrypoint ------------
+    # entrypoint: [ "/bin/sh", "-c" ]
+    # command: /bin/sh -c "echo 'pulling Gemma-3 vision model …' && ollama pull gemma3:4b && echo 'starting Ollama server' && ollama serve"
+    #–– GPU (comment these two lines to run CPU-only) ––––––––––––––––––––
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0", "1"]
+              capabilities: [gpu]
+    volumes:
+      - ./.ollama_data:/root/.ollama                 # keeps model weights
+    ports:
+      - "10102:11434"                                # host:container
+    restart: unless-stopped
+
+volumes:
+  dbdata:

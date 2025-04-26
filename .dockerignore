@@ -1,0 +1,4 @@
+filestore/
+.venv/
+.ollama_data/
+*.ipynb

@@ -1,0 +1,18 @@
+[project]
+name = "aimlops"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "alembic>=1.15.2",
+    "av>=14.3.0",
+    "ipykernel>=6.29.5",
+    "moviepy>=2.1.2",
+    "nicegui>=2.15.0",
+    "ollama>=0.4.8",
+    "opencv-python>=4.11.0.86",
+    "sqlalchemy>=2.0.40",
+    "webvtt-py>=0.5.1",
+    "yt-dlp>=2025.3.31",
+]
